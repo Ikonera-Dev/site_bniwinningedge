@@ -38,7 +38,7 @@
  */
 
 window.MEMBERS_DB = {
-  "lastSynced": "2026-09-25 03:16 UTC",
+  "lastSynced": "2026-09-25 20:18 UTC",
   "roles": [
     {
       "role": "President",
@@ -273,7 +273,7 @@ window.MEMBERS_DB = {
       "phone": "5088403765",
       "email": "",
       "photo": "",
-      "bniPhoto": "",
+      "bniPhoto": "https://bniconnectglobal.com/web/open/networkViewProfileImage/6ab66307f3668000012cbe3f.jpg",
       "bniProfileUrl": "https://bninortheastma.com/en-US/memberdetails?encryptedMemberId=SH38I%2F3252C1r6XB9ifC6w%3D%3D&name=Ian+McCarthy",
       "bniMessageUrl": "https://bninortheastma.com/en-US/sendmessage?userId=HtaLcCJsY45Yq98lWR4iKg%3D%3D&userName=Ian+McCarthy"
     },

@@ -301,9 +301,18 @@
       : `<span class="contact-missing" title="${esc(title)}">${label}</span>`;
   }
 
+  // "508-620-6200x210" -> "tel:5086206200,210": the comma makes the phone
+  // pause, then dial the extension (stripping the "x" would glue the
+  // extension onto the number and dial the wrong one).
+  function telHref(phone) {
+    const [main, ext = ""] = phone.split(/\s*(?:x|ext\.?|extension)\s*/i);
+    const extDigits = ext.replace(/\D/g, "");
+    return `tel:${main.replace(/[^0-9+]/g, "")}${extDigits ? "," + extDigits : ""}`;
+  }
+
   function contactRow(person) {
     const items = [
-      contactItem("Call", person.phone ? `tel:${person.phone.replace(/[^0-9+]/g, "")}` : "", "No phone number on file"),
+      contactItem("Call", person.phone ? telHref(person.phone) : "", "No phone number on file"),
       contactItem("Website", person.companyUrl || "", "No company website on file"),
       contactItem("Email", person.email ? `mailto:${person.email}` : "", "No email on file"),
     ];
