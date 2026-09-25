@@ -8,6 +8,14 @@ Checks the chapter's public BNI page against the member database
     python3 scripts/sync-bni.py --update    # also let BNI overwrite fields
                                             # that differ from the database
 
+It also reads every person's own member page, which is where BNI keeps the
+photo, website, address, phone numbers, social links and "My Business" text
+for members without a leadership role (the chapter page only shows photos
+for leadership). BNI never publishes email addresses. If a member page can't
+be read (BNI sometimes answers with an empty error page, or the profile
+isn't public), that person's existing details are kept. --no-member-pages
+skips this step.
+
 For every person found on BNI (the member table and the leadership cards):
   - NOT in the database yet -> a new record is added with everything BNI
     has on them. Chapter members are added with "enabled": true, people who
@@ -45,9 +53,11 @@ that — there's no CORS restriction on a script you run yourself.
 """
 
 import argparse
+import html as html_lib
 import json
 import re
 import sys
+import time
 import urllib.request
 import urllib.parse
 from datetime import datetime, timezone
@@ -59,11 +69,16 @@ from pathlib import Path
 # opening browser devtools -> Network tab, and looking at the POST request
 # to .../bnicms/v3/frontend/chapterdetail/display for its form fields.
 # ---------------------------------------------------------------------------
-BASE_URL = "https://bninortheastma.com"
+BASE_URL = "https://bniamerica.com"
 ENDPOINT = "/bnicms/v3/frontend/chapterdetail/display"
+MEMBER_ENDPOINT = "/bnicms/v3/frontend/memberdetail/display"
 CHAPTER_ID = "uYMfymrQf2BYSn2giIGAwg=="   # decoded chapterId query param
-WEBSITE_TYPE = "2"
-WEBSITE_ID = "27402"
+WEBSITE_TYPE = "1"                          # bniamerica.com (national site)
+WEBSITE_ID = "1555"
+# The regional site (https://bninortheastma.com, type "2", id "27402")
+# serves identical data from the same backend, if this one ever goes away.
+
+MEMBER_PAGE_DELAY = 0.7   # seconds between member-page requests, to be polite
 
 DB_PATH = Path(__file__).resolve().parent.parent / "data" / "members.js"
 DB_PREFIX = "window.MEMBERS_DB = "
@@ -100,8 +115,12 @@ DB_HEADER = """/**
  *    photo         the image the site shows. Leave "" to use bniPhoto.
  *                  Your own image: put the file in img/members/ and set
  *                  e.g. "photo": "img/members/adam-bortolussi.jpg"
- *    bniPhoto, bniProfileUrl, bniMessageUrl
- *                  mirror BNI; refreshed on every sync, don't edit
+ *    bniPhoto, bniProfileUrl, bniMessageUrl, bniAddress, bniPhones,
+ *    bniSocial, bniCompanyLogo, bniMyBusiness, bniIdealReferral,
+ *    bniIdealReferralPartner
+ *                  mirror BNI (the chapter page and each member's own
+ *                  page); refreshed on every sync, don't edit. Not shown
+ *                  on the site yet except bniPhoto.
  *
  *  Refresh from BNI:  python3 scripts/sync-bni.py   (--dry-run to preview)
  * ============================================================================
@@ -118,10 +137,13 @@ RECORD_FIELDS = [
     "id", "enabled", "trophyWinner", "roles", "name", "firstName", "lastName",
     "company", "companyUrl", "category", "categoryPath",
     "phone", "email", "photo", "bniPhoto", "bniProfileUrl", "bniMessageUrl",
+    "bniAddress", "bniPhones", "bniSocial", "bniCompanyLogo",
+    "bniMyBusiness", "bniIdealReferral", "bniIdealReferralPartner",
 ]
 
 # Default for a field missing from a record (e.g. one added by hand).
-FIELD_DEFAULTS = {"enabled": True, "trophyWinner": False, "roles": []}
+FIELD_DEFAULTS = {"enabled": True, "trophyWinner": False, "roles": [],
+                  "bniPhones": [], "bniSocial": []}
 
 # Fields the sync fills in from BNI when they're empty. `enabled`,
 # `trophyWinner`, `email` and `photo` are never touched; `roles` is handled
@@ -136,6 +158,14 @@ TROPHY_MAX = 1
 
 # Fields that mirror BNI and are overwritten on every sync.
 MIRROR_FIELDS = ["bniPhoto", "bniProfileUrl", "bniMessageUrl"]
+
+# Mirror fields that only come from each person's member page. When that
+# page can't be read, these keep their current values instead of being
+# blanked.
+MEMBER_PAGE_FIELDS = [
+    "bniAddress", "bniPhones", "bniSocial", "bniCompanyLogo",
+    "bniMyBusiness", "bniIdealReferral", "bniIdealReferralPartner",
+]
 
 
 def fetch_chapter_html():
@@ -341,6 +371,13 @@ def to_record(person, enabled):
         "bniPhoto": "" if photo == DEFAULT_PHOTO else photo,
         "bniProfileUrl": profile_url(person["memberId"], person["name"]),
         "bniMessageUrl": message_url(person.get("userId", ""), person["name"]),
+        "bniAddress": "",
+        "bniPhones": [],
+        "bniSocial": [],
+        "bniCompanyLogo": "",
+        "bniMyBusiness": "",
+        "bniIdealReferral": "",
+        "bniIdealReferralPartner": "",
     }
 
 
@@ -373,6 +410,146 @@ def found_on_bni(members, leadership_sections):
     return found
 
 
+# ---------------------------------------------------------------------------
+# Member pages
+#
+# The chapter page only has photos (and some websites) for people with a
+# leadership role. Everyone's photo, website, address, phone numbers, social
+# links and "My Business" text live on their own member page, which BNI's
+# site loads from MEMBER_ENDPOINT. BNI never publishes email addresses.
+#
+# That endpoint answers a failed or incomplete request with an empty page
+# full of PHP "Notice"/"Warning" lines instead of an error code (seen on
+# 2026-09-24, and for profiles that aren't public), so every response is
+# checked for that before anything is taken from it.
+# ---------------------------------------------------------------------------
+
+def member_page_settings():
+    """Reads the `languages` and `mappedWidgetSettings` values BNI's member
+    page sends with its request. The endpoint returns nothing without them."""
+    url = f"{BASE_URL}/en-US/memberdetails"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; BNI-chapter-site-sync/1.0)"})
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        page = resp.read().decode("utf-8", errors="replace")
+    lang = re.search(r"var languages = (\{.*?\});", page)
+    mapped = re.search(r"var mappedWidgetSettings = '([^']*)'", page)
+    if not lang or not mapped:
+        raise RuntimeError("couldn't find BNI's member-page settings; the page layout changed")
+    return lang.group(1), mapped.group(1)
+
+
+def fetch_member_html(member_id, name, settings):
+    languages, mapped = settings
+    params = (f"encryptedMemberId={urllib.parse.quote(member_id, safe='')}"
+              f"&cmsv3=true&name={urllib.parse.quote_plus(name)}")
+    body = urllib.parse.urlencode({
+        "parameters": params,
+        "languages": languages,
+        "pageMode": "Live_Site",
+        "mappedWidgetSettings": mapped,
+        "websitetype": WEBSITE_TYPE,
+        "website_type": WEBSITE_TYPE,
+        "website_id": WEBSITE_ID,
+        "memberId": member_id,
+    }).encode()
+    req = urllib.request.Request(
+        BASE_URL + MEMBER_ENDPOINT, data=body, method="POST",
+        headers={
+            "User-Agent": "Mozilla/5.0 (compatible; BNI-chapter-site-sync/1.0)",
+            "X-Requested-With": "XMLHttpRequest",
+            "Referer": f"{BASE_URL}/en-US/memberdetails?{params}",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        return resp.read().decode("utf-8", errors="replace")
+
+
+def page_text(fragment):
+    return html_lib.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", fragment))).strip()
+
+
+def parse_member_page(html, name):
+    """Returns the member page's fields, or None if the page is BNI's empty
+    error template or belongs to someone else."""
+    if re.search(r"<b>(Notice|Warning|Fatal error)</b>", html):
+        return None
+    heading = re.search(r"<h2>(.*?)</h2>", html, re.S)
+    if not heading or page_text(heading.group(1)) != name:
+        return None
+
+    info = {}
+    photo = re.search(r'<img[^>]*src="([^"]*)"[^>]*alt="[^"]*profile picture"', html)
+    src = photo.group(1) if photo else ""
+    info["photo"] = "" if (not src or "profile-default" in src) else urllib.parse.urljoin(BASE_URL, src)
+
+    site = re.search(r"</h2>\s*<p>\s*<a href=\"([^\"]+)\"", html)
+    info["website"] = site.group(1).strip() if site else ""
+
+    details = re.search(r'class="memberContactDetails">(.*?)</ul>', html, re.S)
+    info["phones"] = list(dict.fromkeys(re.findall(r'href="tel:([^"]+)"', details.group(1)))) if details else []
+
+    social = re.search(r'class="smUrls"[^>]*>(.*?)</div>', html, re.S)
+    info["social"] = re.findall(r'<a href="(https?://[^"]+)"', social.group(1)) if social else []
+
+    logo = re.search(r'<img[^>]*src="([^"]*)"[^>]*alt="[^"]*profile-image-type-company"', html)
+    info["logo"] = urllib.parse.urljoin(BASE_URL, logo.group(1)) if logo else ""
+
+    # "Mr. Peter Hamilton<br/>Mirick O'Connell<br/>1800 W Park Dr<br/>Westborough, MA 01581"
+    card = re.search(r'class="textHolder">\s*<h6>(.*?)</h6>', html, re.S)
+    lines = [page_text(x) for x in re.split(r"<br\s*/?>", card.group(1))] if card else []
+    info["address"] = ", ".join(line for line in lines[2:] if line)
+
+    for key, label in [("myBusiness", "My Business"), ("idealReferral", "Ideal Referral"),
+                       ("idealReferralPartner", "My Ideal Referral Partner")]:
+        m = re.search(rf">\s*{label}\s*<.*?<p[^>]*>(.*?)</p>", html, re.S)
+        info[key] = page_text(m.group(1)) if m else ""
+    return info
+
+
+def enrich_from_member_pages(found, report):
+    """Adds member-page data to each record found on BNI. Records whose page
+    can't be read are marked so sync() keeps their existing member-page data."""
+    try:
+        settings = member_page_settings()
+    except Exception as e:  # network or layout problem: skip the step, keep everything
+        report["pagesFailed"].append(f"all member pages skipped: {e}")
+        for rec in found.values():
+            rec["_memberPageOk"] = False
+        return
+
+    ok = 0
+    for i, rec in enumerate(found.values()):
+        if i:
+            time.sleep(MEMBER_PAGE_DELAY)
+        info = None
+        if not rec["id"].startswith("name:"):
+            try:
+                info = parse_member_page(fetch_member_html(rec["id"], rec["name"], settings), rec["name"])
+            except Exception as e:
+                report["pagesFailed"].append(f"{rec['name']}: {e}")
+        rec["_memberPageOk"] = info is not None
+        if info is None:
+            report["pagesUnavailable"].append(rec["name"])
+            continue
+        ok += 1
+        rec["bniPhoto"] = rec["bniPhoto"] or info["photo"]
+        rec["companyUrl"] = rec["companyUrl"] or info["website"]
+        rec["bniAddress"] = info["address"]
+        rec["bniPhones"] = info["phones"]
+        rec["bniSocial"] = info["social"]
+        rec["bniCompanyLogo"] = info["logo"]
+        rec["bniMyBusiness"] = info["myBusiness"]
+        rec["bniIdealReferral"] = info["idealReferral"]
+        rec["bniIdealReferralPartner"] = info["idealReferralPartner"]
+
+    report["pagesRead"] = ok
+    if found and ok == 0:
+        report["pagesFailed"].append(
+            "BNI returned no data for ANY member page. That's a problem on BNI's side "
+            "(it happened on 2026-09-24); nothing from member pages was changed. Try later.")
+
+
 def load_db():
     if not DB_PATH.exists():
         return {"lastSynced": "", "roles": [], "people": []}
@@ -390,18 +567,23 @@ def load_db():
         sys.exit(1)
 
 
-def sync(db, found, update):
-    """Merges BNI's people into db["people"]. Returns a list of report lines."""
+def new_report():
+    return {"added": [], "filled": [], "updated": [], "differs": [], "refreshed": [],
+            "missing": [], "disabled": [], "newRoles": [],
+            "capFixed": [], "capUnresolved": [], "capChecked": 0, "roleDiffs": [],
+            "pagesRead": 0, "pagesUnavailable": [], "pagesFailed": []}
+
+
+def sync(db, found, update, report):
+    """Merges BNI's people into db["people"], adding to `report`."""
     people = db["people"]
     by_id = {p.get("id"): p for p in people}
     by_name = {p.get("name", "").lower(): p for p in people}
-    report = {"added": [], "filled": [], "updated": [], "differs": [], "refreshed": [],
-              "missing": [], "disabled": [], "newRoles": [],
-              "capFixed": [], "capUnresolved": [], "capChecked": 0, "roleDiffs": []}
 
     for rec in found.values():
         existing = by_id.get(rec["id"]) or by_name.get(rec["name"].lower())
         if not existing:
+            rec = {k: v for k, v in rec.items() if not k.startswith("_")}
             people.append(rec)
             report["added"].append(f"{rec['name']} ({'enabled' if rec['enabled'] else 'disabled, leadership only'})")
             continue
@@ -439,10 +621,18 @@ def sync(db, found, update):
                 # Reported after the cap check, which may resolve it.
                 report["roleDiffs"].append((existing, theirs))
 
-        for field in MIRROR_FIELDS:
+        page_ok = rec.get("_memberPageOk", True)
+        changed = []
+        for field in MIRROR_FIELDS + MEMBER_PAGE_FIELDS:
+            # When the member page couldn't be read, keep what it gave last
+            # time, including a photo that only the member page had.
+            if not page_ok and (field in MEMBER_PAGE_FIELDS or (field == "bniPhoto" and not rec[field])):
+                continue
             if existing[field] != rec[field]:
-                report["refreshed"].append(f"{existing['name']}: {field}")
+                changed.append(field)
                 existing[field] = rec[field]
+        if changed:
+            report["refreshed"].append(f"{existing['name']}: {', '.join(changed)}")
 
         if rec["enabled"] and not existing["enabled"]:
             report["disabled"].append(existing["name"])
@@ -451,8 +641,6 @@ def sync(db, found, update):
     for p in people:
         if p["enabled"] and p["id"] not in found_ids:
             report["missing"].append(p["name"])
-
-    return report
 
 
 def add_new_roles(db, leadership_sections, report):
@@ -554,7 +742,9 @@ def print_report(report, update):
         ("filled", "Empty fields filled in from BNI"),
         ("updated", "Changed to BNI's value (--update)"),
         ("differs", "Different on BNI, kept yours (re-run with --update to take BNI's)"),
-        ("refreshed", "BNI photo/links refreshed"),
+        ("refreshed", "BNI photo/links/member-page details refreshed"),
+        ("pagesUnavailable", "Member page not public or not readable (kept existing details)"),
+        ("pagesFailed", "Member page problems"),
         ("missing", "Enabled but no longer on BNI (set \"enabled\": false if they left)"),
         ("disabled", "On BNI's member list but disabled in the database"),
         ("newRoles", "New roles added to the roles table (set \"max\" if it has a cap)"),
@@ -570,6 +760,8 @@ def print_report(report, update):
                 print(f"  - {line}")
     if not any_output:
         print("\nEveryone on BNI is already in the database and up to date.")
+    print(f"\nMember pages read: {report['pagesRead']}. BNI doesn't publish email addresses; "
+          "add those to data/members.js by hand.")
     if not report["capFixed"] and not report["capUnresolved"]:
         print(f"\nRole cap check: all {report['capChecked']} capped role(s) and the trophy winner OK.")
 
@@ -578,6 +770,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--dry-run", action="store_true", help="report only, don't write members.js")
     parser.add_argument("--update", action="store_true", help="overwrite fields that differ from BNI")
+    parser.add_argument("--no-member-pages", action="store_true",
+                        help="skip the per-member pages (faster; keeps existing member-page details)")
     args = parser.parse_args()
 
     db = load_db()
@@ -600,7 +794,14 @@ def main():
 
     db.setdefault("roles", [])
     found = found_on_bni(members, leadership)
-    report = sync(db, found, args.update)
+    report = new_report()
+    if args.no_member_pages:
+        for rec in found.values():
+            rec["_memberPageOk"] = False
+    else:
+        print(f"Reading {len(found)} member pages ...")
+        enrich_from_member_pages(found, report)
+    sync(db, found, args.update, report)
     add_new_roles(db, leadership, report)
     record_bni_holders(db, leadership)
     check_caps(db, report)
