@@ -71,11 +71,11 @@ window.SITE_DATA = {
    * THIS WEEK — replace every field each Friday.
    */
   thisWeek: {
-    meetingDateLabel: "September 25th, 2026",
-    trophyNote: "Congratulations, Peter!",
+    meetingDateLabel: "October 2nd, 2026",
+    trophyNote: "Congratulations, Jake!",
     speakers: [
-      { name: "Raphael Guimaraes", company: "SumZero Energy Systems" },
-      { name: "Brendon Mourao", company: "Ikonera" }
+      { name: "Adam Bortolussi", company: "Bortolussi Wealth Management" },
+      { name: "Clif Newton", company: "Ulta Home Improvements" }
     ]
   },
 
@@ -124,12 +124,12 @@ window.SITE_DATA = {
    * hidden automatically; delete old rows whenever convenient.
    */
   rotation: [
-    { date: "September 25", speakers: "Raphael G. / Brendon M." },
     { date: "October 2",    speakers: "Adam B. / Clif N." },
     { date: "October 9",    speakers: "Matt C. / Ian M." },
     { date: "October 16",   speakers: "Peter H. / Mike S." },
     { date: "October 23",   speakers: "Chris F. / Joe N." },
     { date: "October 30",   speakers: "Jeremy C. / Peter E." },
-    { date: "November 6",   speakers: "Chris M. / Jake S." }
+    { date: "November 6",   speakers: "Chris M. / Jake S." },
+    { date: "November 13",  speakers: "Raphael G. / Brendon M." }
   ]
 };

@@ -367,7 +367,7 @@ window.MEMBERS_DB = {
     {
       "id": "kW4lRZHMcM0DS7u84pfh9A==",
       "enabled": true,
-      "trophyWinner": false,
+      "trophyWinner": true,
       "roles": [
         "Visitor Host"
       ],
@@ -578,7 +578,7 @@ window.MEMBERS_DB = {
     {
       "id": "zETax0U00ouSKcWuJ0KybA==",
       "enabled": true,
-      "trophyWinner": true,
+      "trophyWinner": false,
       "roles": [],
       "name": "Peter Hamilton",
       "firstName": "Peter",
