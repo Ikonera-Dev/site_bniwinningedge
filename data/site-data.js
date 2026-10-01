@@ -15,7 +15,9 @@
  *  1. Open the weekly BNI email (the .oft/.eml Outlook file, or whatever
  *     Friday recap you send out).
  *  2. Update the `thisWeek` block (meetingDateLabel, trophyNote,
- *     speakers), the `quote`, and the `palms` report (see its comment).
+ *     speakers, announcements), the `quote`, and the `palms` report (see
+ *     its comment). `announcements` is a list of short lines, one bullet
+ *     each; use [] to hide the Announcements card.
  *     The trophy winner itself is picked in data/members.js: move
  *     "trophyWinner": true to the winner's record (false on everyone else).
  *  3. Add new speaker dates to the bottom of `rotation`. Past dates are
@@ -76,6 +78,9 @@ window.SITE_DATA = {
     speakers: [
       { name: "Adam Bortolussi", company: "Bortolussi Wealth Management" },
       { name: "Clif Newton", company: "Ulta Home Improvements" }
+    ],
+    announcements: [
+      "New leadership & PALMS reset, final numbers available"
     ]
   },
 

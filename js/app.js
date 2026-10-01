@@ -135,7 +135,6 @@
   $("#chapter-name").textContent = siteData.chapter.name;
   $("#chapter-tagline").textContent = siteData.chapter.tagline;
   $("#footer-chapter-name").textContent = siteData.chapter.name;
-  $("#footer-region").textContent = siteData.chapter.region;
 
   const m = siteData.chapter.meeting;
   $("#hero-meeting").innerHTML = `
@@ -209,6 +208,21 @@
       </div>
     </div>
   `).join("");
+
+  // Announcements: one bullet per entry in thisWeek.announcements. The card
+  // stays hidden when the list is empty or missing. Skipped if the card isn't
+  // in the page (a browser still holding the older cached index.html).
+  const announcements = (siteData.thisWeek.announcements || []).filter(Boolean);
+  const announcementsCard = $("#announcements-card");
+  if (announcementsCard) {
+    const announcementsList = $("#announcements-list");
+    announcements.forEach((text) => {
+      const li = document.createElement("li");
+      li.textContent = text;
+      announcementsList.appendChild(li);
+    });
+    announcementsCard.hidden = announcements.length === 0;
+  }
 
   /* ---------------- PALMS stat meters ---------------- */
 

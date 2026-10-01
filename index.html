@@ -59,6 +59,11 @@
           <div class="person-list" id="this-week-speakers"><!-- filled by app.js --></div>
         </article>
 
+        <article class="card announcements-card" id="announcements-card" hidden>
+          <h3 class="card-label">Announcements</h3>
+          <ul id="announcements-list"><!-- filled by app.js --></ul>
+        </article>
+
       </div>
 
       <h3 class="subsection-title">PALMS Report <span class="muted" id="palms-asof"></span></h3>
@@ -127,7 +132,9 @@
   <div class="wrap footer-inner">
     <div>
       <strong id="footer-chapter-name">BNI Winning Edge</strong>
-      <p class="muted" id="footer-region">BNI Northeast Massachusetts</p>
+      <!-- Kept hidden so a browser still running the previous cached app.js (which
+           fills this element) doesn't break. Safe to delete in a later release. -->
+      <p id="footer-region" hidden></p>
     </div>
     <div class="footer-social" id="footer-social"><!-- filled by app.js --></div>
     <div class="footer-dues" id="footer-dues"></div>

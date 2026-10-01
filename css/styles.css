@@ -181,12 +181,19 @@ a { color: var(--accent); text-decoration: none; }
   font-weight: 600;
 }
 
+.announcements-card ul,
 .policies-card ul {
   margin: 0;
   padding-left: 20px;
   color: var(--ink-secondary);
 }
+.announcements-card li,
 .policies-card li { margin-bottom: 8px; }
+.announcements-card li:last-child { margin-bottom: 0; }
+
+/* Announcements span the full width under the three This Week cards. */
+.announcements-card { grid-column: 1 / -1; }
+.announcements-card[hidden] { display: none; }
 
 /* ---------- People rows (trophy / speakers / leadership / members) ---------- */
 
