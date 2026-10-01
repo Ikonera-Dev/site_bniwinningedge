@@ -108,12 +108,12 @@ window.SITE_DATA = {
    *   It rewrites this block only, so keep one metric per line.
    */
   palms: {
-    asOf: "2026-09-18",
+    asOf: "2026-09-26",
     ytdSince: "October 1st",
     metrics: {
-      tyfcb:     { label: "TYFCB",     prefix: "$", ytd: 837970, lastWeekYtd: 802370, goal: 1000000 },
-      oneToOnes: { label: "1-to-1's",  prefix: "",  ytd: 689,    lastWeekYtd: 671,    goal: 2500 },
-      ceus:      { label: "CEUs",      prefix: "",  ytd: 698,    lastWeekYtd: 695,    goal: 2400 },
+      tyfcb:     { label: "TYFCB",     prefix: "$", ytd: 838270, lastWeekYtd: 802370, goal: 1000000 },
+      oneToOnes: { label: "1-to-1's",  prefix: "",  ytd: 705,    lastWeekYtd: 698,    goal: 2500 },
+      ceus:      { label: "CEUs",      prefix: "",  ytd: 695,    lastWeekYtd: 689,    goal: 2400 },
       referrals: { label: "Referrals", prefix: "",  ytd: null,   lastWeekYtd: null,   goal: null }
     }
   },

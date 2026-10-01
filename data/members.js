@@ -42,14 +42,14 @@
  */
 
 window.MEMBERS_DB = {
-  "lastSynced": "2026-09-25 20:30 UTC",
+  "lastSynced": "2026-10-01 16:09 UTC",
   "roles": [
     {
       "role": "President",
       "section": "Executive Team",
       "max": 1,
       "bniHolders": [
-        "nFGBAAeVpNoRUTFpwqNKiA=="
+        "0PIhS4ZU9mE0d0uRcDU68w=="
       ]
     },
     {
@@ -57,7 +57,7 @@ window.MEMBERS_DB = {
       "section": "Executive Team",
       "max": 1,
       "bniHolders": [
-        "SH38I/3252C1r6XB9ifC6w=="
+        "kW4lRZHMcM0DS7u84pfh9A=="
       ]
     },
     {
@@ -65,18 +65,14 @@ window.MEMBERS_DB = {
       "section": "Executive Team",
       "max": 1,
       "bniHolders": [
-        "0BkSUadz00Gm8d2rjHqMPw=="
+        "nFGBAAeVpNoRUTFpwqNKiA=="
       ]
     },
     {
       "role": "Visitor Host",
       "section": "Visitor Host",
       "max": 3,
-      "bniHolders": [
-        "kW4lRZHMcM0DS7u84pfh9A==",
-        "+1w2thLr4Ve16fl9Ctp2xw==",
-        "nvAZLxzaizQVjczJ9MFQsA=="
-      ]
+      "bniHolders": []
     },
     {
       "role": "Membership Committee",
@@ -90,17 +86,13 @@ window.MEMBERS_DB = {
       "role": "Membership Committee - Quality Assurance",
       "section": "Membership Committee",
       "max": null,
-      "bniHolders": [
-        "YZ9ufZ4p9c9OWBnIOdnZcA=="
-      ]
+      "bniHolders": []
     },
     {
       "role": "Membership Committee - Member Relations",
       "section": "Membership Committee",
       "max": null,
-      "bniHolders": [
-        "i52tH5sJvQf9+rCZ34UWkw=="
-      ]
+      "bniHolders": []
     },
     {
       "role": "Chapter Webmaster",
@@ -211,8 +203,7 @@ window.MEMBERS_DB = {
       "enabled": true,
       "trophyWinner": false,
       "roles": [
-        "Membership Committee",
-        "Membership Committee - Quality Assurance"
+        "Membership Committee"
       ],
       "name": "Christopher Fitts",
       "firstName": "Christopher",
@@ -310,7 +301,9 @@ window.MEMBERS_DB = {
       "id": "0PIhS4ZU9mE0d0uRcDU68w==",
       "enabled": true,
       "trophyWinner": false,
-      "roles": [],
+      "roles": [
+        "President"
+      ],
       "name": "Clif Newton",
       "firstName": "Clif",
       "lastName": "Newton",
@@ -338,9 +331,7 @@ window.MEMBERS_DB = {
       "id": "SH38I/3252C1r6XB9ifC6w==",
       "enabled": true,
       "trophyWinner": false,
-      "roles": [
-        "Vice President"
-      ],
+      "roles": [],
       "name": "Ian McCarthy",
       "firstName": "Ian",
       "lastName": "McCarthy",
@@ -351,7 +342,7 @@ window.MEMBERS_DB = {
       "phone": "5088403765",
       "email": "",
       "photo": "",
-      "bniPhoto": "https://bniconnectglobal.com/web/open/networkViewProfileImage/6ab66307f3668000012cbe3f.jpg",
+      "bniPhoto": "https://bniamerica.com/web/open/appsCmsImageDownload?imageObjectId=6ab66307f3668000012cbe3f",
       "bniProfileUrl": "https://bniamerica.com/en-US/memberdetails?encryptedMemberId=SH38I%2F3252C1r6XB9ifC6w%3D%3D&name=Ian+McCarthy",
       "bniMessageUrl": "https://bniamerica.com/en-US/sendmessage?userId=HtaLcCJsY45Yq98lWR4iKg%3D%3D&userName=Ian+McCarthy",
       "bniAddress": "101 S Main Street, Uxbridge, MA 01569",
@@ -369,7 +360,7 @@ window.MEMBERS_DB = {
       "enabled": true,
       "trophyWinner": true,
       "roles": [
-        "Visitor Host"
+        "Vice President"
       ],
       "name": "Jake Shanley",
       "firstName": "Jake",
@@ -398,9 +389,7 @@ window.MEMBERS_DB = {
       "id": "+1w2thLr4Ve16fl9Ctp2xw==",
       "enabled": true,
       "trophyWinner": false,
-      "roles": [
-        "Visitor Host"
-      ],
+      "roles": [],
       "name": "Jeremy Cohen",
       "firstName": "Jeremy",
       "lastName": "Cohen",
@@ -411,7 +400,7 @@ window.MEMBERS_DB = {
       "phone": "508-309-4880",
       "email": "",
       "photo": "",
-      "bniPhoto": "https://bniconnectglobal.com/web/open/networkViewProfileImage/577424ddf0f0f3df33720149.jpg",
+      "bniPhoto": "https://bniamerica.com/web/open/appsCmsImageDownload?imageObjectId=577424ddf0f0f3df33720149",
       "bniProfileUrl": "https://bniamerica.com/en-US/memberdetails?encryptedMemberId=%2B1w2thLr4Ve16fl9Ctp2xw%3D%3D&name=Jeremy+Cohen",
       "bniMessageUrl": "https://bniamerica.com/en-US/sendmessage?userId=Lt2Hgq5pGdoNUpEQuTkbnQ%3D%3D&userName=Jeremy+Cohen",
       "bniAddress": "160 Speen Street, Suite 309, Framingham, MA 01701",
@@ -431,7 +420,7 @@ window.MEMBERS_DB = {
       "enabled": true,
       "trophyWinner": false,
       "roles": [
-        "President"
+        "Secretary / Treasurer"
       ],
       "name": "Joseph Nealon",
       "firstName": "Joseph",
@@ -461,9 +450,7 @@ window.MEMBERS_DB = {
       "id": "0BkSUadz00Gm8d2rjHqMPw==",
       "enabled": true,
       "trophyWinner": false,
-      "roles": [
-        "Secretary / Treasurer"
-      ],
+      "roles": [],
       "name": "Matt Cuneo",
       "firstName": "Matt",
       "lastName": "Cuneo",
@@ -549,9 +536,7 @@ window.MEMBERS_DB = {
       "id": "i52tH5sJvQf9+rCZ34UWkw==",
       "enabled": true,
       "trophyWinner": false,
-      "roles": [
-        "Membership Committee - Member Relations"
-      ],
+      "roles": [],
       "name": "Peter Edwards",
       "firstName": "Peter",
       "lastName": "Edwards",
@@ -562,7 +547,7 @@ window.MEMBERS_DB = {
       "phone": "508-761-1481",
       "email": "",
       "photo": "",
-      "bniPhoto": "https://bniconnectglobal.com/web/open/networkViewProfileImage/5b51fe345a58e6f939f66bc8.jpg",
+      "bniPhoto": "https://bniamerica.com/web/open/appsCmsImageDownload?imageObjectId=5b51fe345a58e6f939f66bc8",
       "bniProfileUrl": "https://bniamerica.com/en-US/memberdetails?encryptedMemberId=i52tH5sJvQf9%2BrCZ34UWkw%3D%3D&name=Peter+Edwards",
       "bniMessageUrl": "https://bniamerica.com/en-US/sendmessage?userId=UkwYcrqTWmVWwI%2BHYaZBgg%3D%3D&userName=Peter+Edwards",
       "bniAddress": "45 Lyman Street, Suite 28, Westborough, MA 01581",
@@ -610,9 +595,7 @@ window.MEMBERS_DB = {
       "id": "nvAZLxzaizQVjczJ9MFQsA==",
       "enabled": true,
       "trophyWinner": false,
-      "roles": [
-        "Visitor Host"
-      ],
+      "roles": [],
       "name": "Raphael Guimaraes",
       "firstName": "Raphael",
       "lastName": "Guimaraes",
@@ -623,7 +606,7 @@ window.MEMBERS_DB = {
       "phone": "7745270860",
       "email": "",
       "photo": "",
-      "bniPhoto": "https://bniconnectglobal.com/web/open/networkViewProfileImage/695ed945bac2780001809463.jpg",
+      "bniPhoto": "https://bniamerica.com/web/open/appsCmsImageDownload?imageObjectId=695ed945bac2780001809463",
       "bniProfileUrl": "https://bniamerica.com/en-US/memberdetails?encryptedMemberId=nvAZLxzaizQVjczJ9MFQsA%3D%3D&name=Raphael+Guimaraes",
       "bniMessageUrl": "https://bniamerica.com/en-US/sendmessage?userId=95erzBAk01S10D9iI04IJQ%3D%3D&userName=Raphael+Guimaraes",
       "bniAddress": "84 October Hill Road, Holliston, Ma 01746",

@@ -131,7 +131,7 @@
 
   /* ---------------- Header / hero / footer ---------------- */
 
-  document.title = `${siteData.chapter.name} | ${siteData.chapter.region}`;
+  document.title = siteData.chapter.name;
   $("#chapter-name").textContent = siteData.chapter.name;
   $("#chapter-tagline").textContent = siteData.chapter.tagline;
   $("#footer-chapter-name").textContent = siteData.chapter.name;
