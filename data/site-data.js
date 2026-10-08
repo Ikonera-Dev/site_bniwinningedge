@@ -74,7 +74,7 @@ window.SITE_DATA = {
    */
   thisWeek: {
     meetingDateLabel: "October 9th, 2026",
-    trophyNote: "Congratulations, Jake!",
+    trophyNote: "Congratulations, Peter!",
     speakers: [
       { name: "Matt Cuneo", company: "SVN Parsons Commercial Group" },
       { name: "Ian McCarthy", company: "United Home Experts" }

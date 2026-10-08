@@ -358,7 +358,7 @@ window.MEMBERS_DB = {
     {
       "id": "kW4lRZHMcM0DS7u84pfh9A==",
       "enabled": true,
-      "trophyWinner": true,
+      "trophyWinner": false,
       "roles": [
         "Vice President"
       ],
@@ -535,7 +535,7 @@ window.MEMBERS_DB = {
     {
       "id": "i52tH5sJvQf9+rCZ34UWkw==",
       "enabled": true,
-      "trophyWinner": false,
+      "trophyWinner": true,
       "roles": [],
       "name": "Peter Edwards",
       "firstName": "Peter",
