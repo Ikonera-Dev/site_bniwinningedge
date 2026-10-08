@@ -25,6 +25,7 @@ in the file is left byte-for-byte as it was.
 """
 
 import argparse
+import math
 import re
 import sys
 from datetime import date, timedelta
@@ -162,7 +163,9 @@ def goal_text(metric):
     if metric["ytd"] is None or not metric["goal"]:
         return ""
     pct = max(0, min(100, metric["ytd"] / metric["goal"] * 100))
-    return f"{pct:.0f}% of {money(metric, metric['goal'])}"
+    # Round halves up like the site does (JavaScript's toFixed); Python's
+    # round-half-to-even would show 0% where the site shows 1%.
+    return f"{math.floor(pct + 0.5)}% of {money(metric, metric['goal'])}"
 
 
 def show(report, title="PALMS report"):
