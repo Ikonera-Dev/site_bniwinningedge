@@ -113,11 +113,11 @@ window.SITE_DATA = {
    *   It rewrites this block only, so keep one metric per line.
    */
   palms: {
-    asOf: "2026-10-03",
+    asOf: "2026-10-29",
     ytdSince: "October 1st",
     metrics: {
-      tyfcb:     { label: "TYFCB",     prefix: "$", ytd: 26906, lastWeekYtd: 0,    goal: 1000000 },
-      oneToOnes: { label: "1-to-1's",  prefix: "",  ytd: 12,    lastWeekYtd: 0,    goal: 2500 },
+      tyfcb:     { label: "TYFCB",     prefix: "$", ytd: 66648, lastWeekYtd: 0,    goal: 1000000 },
+      oneToOnes: { label: "1-to-1's",  prefix: "",  ytd: 28,    lastWeekYtd: 0,    goal: 2500 },
       ceus:      { label: "CEUs",      prefix: "",  ytd: 12,    lastWeekYtd: 0,    goal: 2400 },
       referrals: { label: "Referrals", prefix: "",  ytd: null,  lastWeekYtd: null, goal: null }
     }
@@ -129,12 +129,9 @@ window.SITE_DATA = {
    * hidden automatically; delete old rows whenever convenient.
    */
   rotation: [
-    { date: "October 9",    speakers: "Matt C. / Ian M." },
-    { date: "October 16",   speakers: "Peter H. / Mike S." },
-    { date: "October 23",   speakers: "Chris F. / Joe N." },
     { date: "October 30",   speakers: "Jeremy C. / Peter E." },
     { date: "November 6",   speakers: "Chris M. / Jake S." },
-    { date: "November 13",  speakers: "Raphael G. / Brendon M." },
+    { date: "November 13",  speakers: "Raphael G." },
     { date: "November 20",  speakers: "Adam B. / Clif N." }
   ]
 };
