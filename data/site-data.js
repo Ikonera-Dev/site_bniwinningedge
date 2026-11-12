@@ -74,13 +74,14 @@ window.SITE_DATA = {
    */
   thisWeek: {
     meetingDateLabel: "October 9th, 2026",
-    trophyNote: "Congratulations, Peter!",
+    trophyNote: "Congratulations, Clif!",
     speakers: [
       { name: "Matt Cuneo", company: "SVN Parsons Commercial Group" },
       { name: "Ian McCarthy", company: "United Home Experts" }
     ],
     announcements: [
-      "New leadership & PALMS reset, final numbers available"
+      "New leadership & PALMS reset, final numbers available",
+      { text: "Microsoft outage update: check the current service status here", url: "https://[MS-OUTAGE-LINK]" }
     ]
   },
 
@@ -113,13 +114,13 @@ window.SITE_DATA = {
    *   It rewrites this block only, so keep one metric per line.
    */
   palms: {
-    asOf: "2026-10-29",
+    asOf: "2026-11-07",
     ytdSince: "October 1st",
     metrics: {
-      tyfcb:     { label: "TYFCB",     prefix: "$", ytd: 66648, lastWeekYtd: 0,    goal: 1000000 },
-      oneToOnes: { label: "1-to-1's",  prefix: "",  ytd: 28,    lastWeekYtd: 0,    goal: 2500 },
-      ceus:      { label: "CEUs",      prefix: "",  ytd: 12,    lastWeekYtd: 0,    goal: 2400 },
-      referrals: { label: "Referrals", prefix: "",  ytd: null,  lastWeekYtd: null, goal: null }
+      tyfcb:     { label: "TYFCB",     prefix: "$", ytd: 84733, lastWeekYtd: 66648, goal: 1000000 },
+      oneToOnes: { label: "1-to-1's",  prefix: "",  ytd: 49,    lastWeekYtd: 28,    goal: 2500 },
+      ceus:      { label: "CEUs",      prefix: "",  ytd: 33,    lastWeekYtd: 12,    goal: 2400 },
+      referrals: { label: "Referrals", prefix: "",  ytd: null,  lastWeekYtd: null,  goal: null }
     }
   },
 
@@ -129,9 +130,14 @@ window.SITE_DATA = {
    * hidden automatically; delete old rows whenever convenient.
    */
   rotation: [
-    { date: "October 30",   speakers: "Jeremy C. / Peter E." },
-    { date: "November 6",   speakers: "Chris M. / Jake S." },
-    { date: "November 13",  speakers: "Raphael G." },
-    { date: "November 20",  speakers: "Adam B. / Clif N." }
+    { date: "November 13", speakers: "Raphael G. / Clif N." },
+    { date: "November 20", speakers: "Adam B. / Ian M." },
+    { date: "November 27", speakers: "Matt C. / Mike S." },
+    { date: "December 4", speakers: "Peter H. / Joe N." },
+    { date: "December 11", speakers: "Chris F. / Jeremy C." },
+    { date: "December 18", speakers: "Peter E. / Chris M." },
+    { date: "December 25", speakers: "🎄 NO MEETING 🎄" },
+    { date: "January 1", speakers: "❄️ NO MEETING ❄️" },
+    { date: "January 8", speakers: "Jake S." }
   ]
 };

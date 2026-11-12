@@ -216,9 +216,20 @@
   const announcementsCard = $("#announcements-card");
   if (announcementsCard) {
     const announcementsList = $("#announcements-list");
-    announcements.forEach((text) => {
+    announcements.forEach((entry) => {
       const li = document.createElement("li");
-      li.textContent = text;
+      // An entry is a plain string, or { text, url } for a clickable line
+      // (only http/https links are linked).
+      if (typeof entry === "object" && /^https?:\/\//i.test(entry.url || "")) {
+        const a = document.createElement("a");
+        a.href = entry.url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.textContent = entry.text || entry.url;
+        li.appendChild(a);
+      } else {
+        li.textContent = typeof entry === "object" ? entry.text || "" : entry;
+      }
       announcementsList.appendChild(li);
     });
     announcementsCard.hidden = announcements.length === 0;
