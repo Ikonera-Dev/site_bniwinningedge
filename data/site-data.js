@@ -81,7 +81,7 @@ window.SITE_DATA = {
     ],
     announcements: [
       "New leadership & PALMS reset, final numbers available",
-      { text: "Microsoft outage update: check the current service status here", url: "https://[MS-OUTAGE-LINK]" }
+      { text: "Microsoft outage update: check the current service status here", url: "https://status.cloud.microsoft" }
     ]
   },
 
