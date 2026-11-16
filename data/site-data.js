@@ -73,10 +73,10 @@ window.SITE_DATA = {
    * THIS WEEK — replace every field each Friday.
    */
   thisWeek: {
-    meetingDateLabel: "October 9th, 2026",
+    meetingDateLabel: "November 20th, 2026",
     trophyNote: "Congratulations, Clif!",
     speakers: [
-      { name: "Matt Cuneo", company: "SVN Parsons Commercial Group" },
+      { name: "Adam Bortolussi", company: "Bortolussi Wealth Management" },
       { name: "Ian McCarthy", company: "United Home Experts" }
     ],
     announcements: [
